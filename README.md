@@ -1,16 +1,28 @@
-# React + Vite
+# About project
+Name: TodoList
+A simple app to manage personal daily routine tasks, allowing  to add, view, and track todos locally.
+The Purpose of the project: Helps users organize their daily tasks and keep track of what’s done or pending.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+# Installation instrucitons
+Fork and clone locally: Fork this repository to your GitHub account https://github.com/AnnetKo-art/hanna-ko-todo-list, then clone your fork to your local machine
+Install dependencies: Run npm install to install all required packages
+Run npm run dev to start the development server. 
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## React Compiler
+# How to run the developer server
+In your Terminal (on Visual Studio Code)
+Start the development server with the command: npm run dev
+Open a browser and navigate to http://localhost:5173
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+# Technologies used:
+React.js – for building the user interface
+JavaScript – main programming language
+HTML/CSS – structure and styling
+Vite – fast development server and build tool
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+
+
+
