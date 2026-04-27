@@ -1,16 +1,18 @@
+import TodoListItem from "./TodoListItem.jsx";
 
-function TodoList() {
-     const todoList = [
-    { id: 1, title: "Review resources" },
-    { id: 2, title: "Take notes" },
-    { id: 3, title: "Code out app" },
-    
-  ];
+// TodoList receives data from parent (App) via props
+function TodoList({todoList}) {    
   return (
     <div>        
       <ul>
+        {/* 
+          KEY MOMENT:
+          We use props (todoList) and map through it
+          This is how React renders lists dynamically
+        */}
         {todoList.map((todo) => (
-          <li key={todo.id}>{todo.title}</li>
+          <TodoListItem key={todo.id} todo={todo} /> 
+         
         ))}
       </ul>
     </div>
