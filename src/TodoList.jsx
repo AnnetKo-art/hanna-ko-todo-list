@@ -1,20 +1,25 @@
 import TodoListItem from "./TodoListItem.jsx";
 
-// TodoList receives data from parent (App) via props
-function TodoList({todoList}) {    
+function TodoList({ todoList, onCompleteTodo }) {
+
+const filteredTodoList = todoList.filter(
+    (todo) => !todo.isCompleted
+  );
   return (
-    <div>        
-      <ul>
-        {/* 
-          KEY MOMENT:
-          We use props (todoList) and map through it
-          This is how React renders lists dynamically
-        */}
-        {todoList.map((todo) => (
-          <TodoListItem key={todo.id} todo={todo} /> 
-         
-        ))}
-      </ul>
+    <div>
+      {filteredTodoList.length === 0 ? (
+        <p>Add todo above to get started</p>
+      ) : (
+        <ul>
+          {filteredTodoList.map((todo) => (
+            <TodoListItem
+              key={todo.id}
+              todo={todo}
+              onCompleteTodo={onCompleteTodo}
+            />
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
