@@ -2,9 +2,9 @@
 // Handles editing, updating, and completing todos
 // using the custom useEditableTitle hook.
 
-
 import TextInputWithLabel from "../../shared/TextInputWithLabel";
 import { useEditableTitle } from "../../hooks/useEditableTitle";
+import { isValidTodoTitle } from "../../utils/todoValidation";
 
 function TodoListItem({ todo, onCompleteTodo, onUpdateTodo }) {
   const {
@@ -35,6 +35,8 @@ function TodoListItem({ todo, onCompleteTodo, onUpdateTodo }) {
         {isEditing ? (
           <>
             <TextInputWithLabel
+              elementId={`editTodo-${todo.id}`}
+              labelText="Edit Todo"
               value={workingTitle}
               onChange={(event) => updateTitle(event.target.value)}
             />
@@ -46,7 +48,7 @@ function TodoListItem({ todo, onCompleteTodo, onUpdateTodo }) {
             <button
               type="button"
               onClick={handleUpdate}
-              disabled={!workingTitle.trim()}
+              disabled={!isValidTodoTitle(workingTitle)}
             >
               Update
             </button>
