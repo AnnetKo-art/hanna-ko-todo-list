@@ -1,3 +1,6 @@
+// Reusable input component with a label.
+// Used for both creating and editing todos.
+
 
 function TextInputWithLabel({
   elementId,
