@@ -1,10 +1,12 @@
+// Displays the list of active todos.
+// Passes todo actions and update handlers
+// down to each TodoListItem component.
+
 import TodoListItem from "./TodoListItem.jsx";
 
-function TodoList({ todoList, onCompleteTodo }) {
+function TodoList({ todoList, onCompleteTodo, onUpdateTodo }) {
+  const filteredTodoList = todoList.filter((todo) => !todo.isCompleted);
 
-const filteredTodoList = todoList.filter(
-    (todo) => !todo.isCompleted
-  );
   return (
     <div>
       {filteredTodoList.length === 0 ? (
@@ -16,6 +18,7 @@ const filteredTodoList = todoList.filter(
               key={todo.id}
               todo={todo}
               onCompleteTodo={onCompleteTodo}
+              onUpdateTodo={onUpdateTodo}
             />
           ))}
         </ul>
