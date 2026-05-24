@@ -1,12 +1,7 @@
-// Form component for creating new todos.
-// Uses controlled input state and validates
-// todo titles before adding them to the list.
-
-
 import { useState } from "react";
 import { useRef } from "react";
-import TextInputWithLabel from "../shared/TextInputWithLabel.jsx";
-import { isValidTodoTitle } from "../utils/todoValidation";
+import TextInputWithLabel from "./../../shared/TextInputWithLabel.jsx";
+import { isValidTodoTitle } from "../../utils/todoValidation.js";
 
 function TodoForm({ onAddTodo }) {
   const [workingTodoTitle, setWorkingTodoTitle] = useState("");
