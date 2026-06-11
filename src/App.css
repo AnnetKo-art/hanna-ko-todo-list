@@ -1,32 +1,42 @@
-function SortBy({
-  sortBy,
-  sortDirection,
-  onSortByChange,
-  onSortDirectionChange,
-}) {
-  return (
-    <div>
-      <label htmlFor="sortBy">Sort by</label>
-      <select
-        id="sortBy"
-        value={sortBy}
-        onChange={(e) => onSortByChange(e.target.value)}
-      >
-        <option value="creationDate">Creation Date</option>
-        <option value="title">Title</option>
-      </select>
+/* --- NotFoundPage Styles --- */
 
-      <label htmlFor="sortDirection">Order</label>
-      <select
-        id="sortDirection"
-        value={sortDirection}
-        onChange={(e) => onSortDirectionChange(e.target.value)}
-      >
-        <option value="desc">Descending</option>
-        <option value="asc">Ascending</option>
-      </select>
-    </div>
-  );
+.not-found-container {
+  text-align: center;
+  padding: 50px;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-export default SortBy;
+.not-found-title {
+  font-size: 4rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.not-found-text {
+  margin-bottom: 40px;
+  color: #666;
+  line-height: 1.6;
+}
+
+.recovery-links {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Styling the React Router Links to look like buttons */
+.btn-link {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.btn-link:hover {
+  background-color: #0056b3;
+}
