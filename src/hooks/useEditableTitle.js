@@ -1,7 +1,3 @@
-// Custom hook for managing editable todo titles.
-// Controls editing state, input changes,
-// cancel actions, and saving updated titles.
-
 import { useState } from "react";
 
 export function useEditableTitle(initialTitle) {
