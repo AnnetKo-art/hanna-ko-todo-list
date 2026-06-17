@@ -1,5 +1,5 @@
-import { useSearchParams } from 'react-router';
-import StatusFilter from '../shared/StatusFilter';
+import { useSearchParams } from "react-router";
+import StatusFilter from "../shared/StatusFilter";
 import TodoForm from "../features/Todos/TodoForm.jsx";
 import TodoList from "../features/Todos/TodoList/TodoList.jsx";
 import SortBy from "../shared/SortBy.jsx";
@@ -15,10 +15,10 @@ import { useAuth } from "../contexts/AuthContext.jsx";
 
 function TodosPage() {
   const { token } = useAuth();
-  // Initialize the searchParams hook
+
   const [searchParams] = useSearchParams();
-  // Read the status filter from the URL parameters (defaults to 'all')
-  const statusFilter = searchParams.get('status') || 'all';
+
+  const statusFilter = searchParams.get("status") || "all";
   const [state, dispatch] = useReducer(todoReducer, initialTodoState);
   const {
     todoList,
@@ -40,7 +40,6 @@ function TodosPage() {
     });
   };
 
-  // cache invalidation function
   const invalidateCache = useCallback(() => {
     dispatch({
       type: TODO_ACTIONS.SET_SORT,
@@ -48,7 +47,6 @@ function TodosPage() {
     });
   }, [sortBy, sortDirection]);
 
-  // ADD TODO - optimistic
   async function addTodo(todoTitle) {
     const tempId = Date.now();
 
@@ -58,7 +56,6 @@ function TodosPage() {
       isCompleted: false,
     };
 
-    // 1. Dispatch START to optimistically add to UI
     dispatch({
       type: TODO_ACTIONS.ADD_TODO_START,
       payload: newTodo,
@@ -84,7 +81,6 @@ function TodosPage() {
 
       const savedTodo = await response.json();
 
-      // 2. Dispatch SUCCESS to swap tempId with real data
       dispatch({
         type: TODO_ACTIONS.ADD_TODO_SUCCESS,
         payload: {
@@ -105,15 +101,13 @@ function TodosPage() {
     }
   }
 
-  // COMPLETE TODO
   async function completeTodo(id) {
-    // Store original todo for rollback
     const originalTodo = todoList.find((todo) => todo.id === id);
 
-    // Optimistically update UI
+    const newCompletedStatus = !originalTodo.isCompleted;
     dispatch({
-      type: TODO_ACTIONS.UPDATE_TODO_SUCCESS,
-      payload: { ...originalTodo, isCompleted: true },
+      type: TODO_ACTIONS.COMPLETE_TODO_SUCCESS,
+      payload: { ...originalTodo, isCompleted: newCompletedStatus },
     });
 
     try {
@@ -125,7 +119,7 @@ function TodosPage() {
         },
         credentials: "include",
         body: JSON.stringify({
-          isCompleted: true,
+          isCompleted: newCompletedStatus,
         }),
       });
 
@@ -134,9 +128,8 @@ function TodosPage() {
       }
       invalidateCache();
     } catch (err) {
-      // Rollback to original todo if request fails (Fixed variable name)
       dispatch({
-        type: TODO_ACTIONS.UPDATE_TODO_SUCCESS,
+        type: TODO_ACTIONS.COMPLETE_TODO_SUCCESS,
         payload: originalTodo,
       });
 
@@ -147,12 +140,9 @@ function TodosPage() {
     }
   }
 
-  // UPDATE TODO
   async function updateTodo(editedTodo) {
     // Store original for rollback
     const originalTodo = todoList.find((todo) => todo.id === editedTodo.id);
-
-    // Optimistic update
     dispatch({
       type: TODO_ACTIONS.UPDATE_TODO_SUCCESS,
       payload: editedTodo,
@@ -190,6 +180,26 @@ function TodosPage() {
     }
   }
 
+  async function deleteTodo(id) {
+    const originalTodo = todoList.find((todo) => todo.id === id);
+
+    dispatch({ type: TODO_ACTIONS.DELETE_TODO_SUCCESS, payload: id });
+
+    try {
+      const response = await fetch(`/api/tasks/${id}`, {
+        method: "DELETE",
+        headers: { "X-CSRF-TOKEN": token },
+        credentials: "include",
+      });
+
+      if (!response.ok) throw new Error("Failed to delete todo");
+      invalidateCache();
+    } catch (err) {
+      dispatch({ type: TODO_ACTIONS.ADD_TODO_START, payload: originalTodo });
+      dispatch({ type: TODO_ACTIONS.DELETE_TODO_ERROR, payload: err.message });
+    }
+  }
+
   useEffect(() => {
     async function fetchTodos() {
       dispatch({ type: TODO_ACTIONS.FETCH_START });
@@ -211,7 +221,6 @@ function TodosPage() {
             "X-CSRF-TOKEN": token,
           },
           credentials: "include",
-          
         });
 
         if (response.status === 401) {
@@ -221,9 +230,9 @@ function TodosPage() {
         if (!response.ok) {
           throw new Error("Something went wrong");
         }
-        
+
         const data = await response.json();
-        
+
         dispatch({
           type: TODO_ACTIONS.FETCH_SUCCESS,
           payload: data.tasks,
@@ -243,22 +252,29 @@ function TodosPage() {
 
   return (
     <div>
-      <h1>My Todos</h1>
-
+      <h2 className="text-2xl font-black tracking-tight text-gray-900 dark:text-white mb-6">
+        My Todos
+      </h2>
       {isTodoListLoading && <p>Loading todos...</p>}
 
       {error && (
         <div>
           <p style={{ color: "red" }}>{error}</p>
-          <button onClick={() => dispatch({ type: TODO_ACTIONS.CLEAR_ERROR })}>Clear Error</button>
+          <button onClick={() => dispatch({ type: TODO_ACTIONS.CLEAR_ERROR })}>
+            Clear Error
+          </button>
         </div>
       )}
 
       {filterError && (
         <div>
           <p>{filterError}</p>
-          <button onClick={() => dispatch({ type: TODO_ACTIONS.CLEAR_ERROR })}>Clear Filter Error</button>
-          <button onClick={() => dispatch({ type: TODO_ACTIONS.RESET_FILTERS })}>
+          <button onClick={() => dispatch({ type: TODO_ACTIONS.CLEAR_ERROR })}>
+            Clear Filter Error
+          </button>
+          <button
+            onClick={() => dispatch({ type: TODO_ACTIONS.RESET_FILTERS })}
+          >
             Reset Filters
           </button>
         </div>
@@ -280,7 +296,7 @@ function TodosPage() {
           })
         }
       />
-      {/*Add the StatusFilter dropdown component to the page */}
+
       <StatusFilter />
       <FilterInput
         filterTerm={filterTerm}
@@ -294,7 +310,8 @@ function TodosPage() {
         onCompleteTodo={completeTodo}
         onUpdateTodo={updateTodo}
         dataVersion={dataVersion}
-        statusFilter={statusFilter} /*Pass the status filter down to the list */
+        statusFilter={statusFilter}
+        onDeleteTodo={deleteTodo}
       />
     </div>
   );

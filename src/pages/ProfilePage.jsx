@@ -4,7 +4,6 @@ import { useAuth } from "../contexts/AuthContext";
 export default function ProfilePage() {
   const { email, token } = useAuth();
 
-  //Local state for API data, matching the instructor's naming
   const [todoStats, setTodoStats] = useState({
     total: 0,
     completed: 0,
@@ -13,7 +12,6 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  //Fetch statistics when component mounts (Instructor's exact logic)
   useEffect(() => {
     async function fetchTodoStats() {
       if (!token) return;
@@ -28,7 +26,6 @@ export default function ProfilePage() {
           credentials: "include",
         };
 
-        // Using /api/tasks instead of the old /api/todos
         const response = await fetch("/api/tasks", options);
 
         if (response.status === 401) {
@@ -41,8 +38,6 @@ export default function ProfilePage() {
 
         const data = await response.json();
         const todos = data.tasks || data;
-
-        // Calculate statistics
         const total = todos.length;
         const completed = todos.filter((todo) => todo.isCompleted).length;
         const active = total - completed;
@@ -58,62 +53,91 @@ export default function ProfilePage() {
     fetchTodoStats();
   }, [token]);
 
-  // Calculate completion percentage
   const completionPercentage =
     todoStats.total > 0
       ? Math.round((todoStats.completed / todoStats.total) * 100)
       : 0;
-
-  // Render UI
+  const userInitial = (email || "User").charAt(0).toUpperCase();
   return (
-    <div className="profile-container">
-      <h1>User Profile</h1>
+    <div className="max-w-4xl mx-auto w-full">
+      <h2 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-6">
+        User Profile
+      </h2>
 
-      <div className="user-info" style={{ marginBottom: "2rem" }}>
-        {/* Your context stores data.name inside the 'email' variable */}
-        <h2>Welcome, {email || "User"}!</h2>
-        <p>
-          <strong>Account Status:</strong> Active
-        </p>
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-10 flex items-center gap-6 transition-colors">
+        {/* Avatar Circle */}
+        <div className="w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center text-3xl font-black shrink-0">
+          {userInitial}
+        </div>
+
+        <div>
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+            Welcome, {email || "User"}!
+          </h3>
+          <div className="flex items-center gap-2 mt-2">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+            </span>
+            <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+              Account Status: Active
+            </span>
+          </div>
+        </div>
       </div>
 
-      <h3>Your Todo Statistics</h3>
+      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+        Your Todo Statistics
+      </h3>
 
-      {loading && <p>Loading your stats...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {loading && (
+        <div className="text-gray-500 dark:text-gray-400 animate-pulse font-medium">
+          Loading your live stats...
+        </div>
+      )}
+
+      {error && (
+        <div className="text-red-500 bg-red-50 dark:bg-red-500/10 p-4 rounded-lg font-bold">
+          {error}
+        </div>
+      )}
 
       {!loading && !error && (
-        <div
-          className="stats-grid"
-          style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}
-        >
-          <div className="stat-card">
-            <h4>Total</h4>
-            <p style={{ fontSize: "24px", fontWeight: "bold" }}>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 transition-colors">
+            <div className="text-xs font-bold tracking-wider text-gray-500 uppercase">
+              Total
+            </div>
+            <div className="text-4xl font-black text-gray-900 dark:text-white mt-2">
               {todoStats.total}
-            </p>
+            </div>
           </div>
-          <div className="stat-card">
-            <h4>Completed</h4>
-            <p style={{ fontSize: "24px", fontWeight: "bold", color: "green" }}>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 transition-colors">
+            <div className="text-xs font-bold tracking-wider text-gray-500 uppercase">
+              Completed
+            </div>
+            <div className="text-4xl font-black text-green-600 mt-2">
               {todoStats.completed}
-            </p>
+            </div>
           </div>
-          <div className="stat-card">
-            <h4>Active</h4>
-            <p
-              style={{ fontSize: "24px", fontWeight: "bold", color: "orange" }}
-            >
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 transition-colors">
+            <div className="text-xs font-bold tracking-wider text-gray-500 uppercase">
+              Active
+            </div>
+            <div className="text-4xl font-black text-amber-500 mt-2">
               {todoStats.active}
-            </p>
+            </div>
           </div>
-          <div className="stat-card">
-            <h4>Completion Rate</h4>
-            <p
-              style={{ fontSize: "24px", fontWeight: "bold", color: "#007bff" }}
-            >
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 transition-colors">
+            <div className="text-xs font-bold tracking-wider text-gray-500 uppercase">
+              Completion Rate
+            </div>
+            <div className="text-4xl font-black text-blue-600 mt-2">
               {completionPercentage}%
-            </p>
+            </div>
           </div>
         </div>
       )}

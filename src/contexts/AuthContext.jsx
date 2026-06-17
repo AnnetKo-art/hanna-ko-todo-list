@@ -4,7 +4,6 @@ const AuthContext = createContext();
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  console.log("Auth context:", context); // Remove this later
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
@@ -15,7 +14,6 @@ export function AuthProvider({ children }) {
   const [email, setEmail] = useState("");
   const [token, setToken] = useState("");
 
-  //LOGIN FUNCTION
   const login = async (userEmail, password) => {
     try {
       const options = {
@@ -46,7 +44,6 @@ export function AuthProvider({ children }) {
     }
   };
 
-  //LOGOUT FUNCTION
   const logout = async () => {
     if (!token) {
       setEmail("");
@@ -73,20 +70,18 @@ export function AuthProvider({ children }) {
         return { success: false, error: "Logout failed on the server." };
       }
     } catch (error) {
-      // Clear state even on network error
       setEmail("");
       setToken("");
       return { success: false, error: "Network error during logout." };
     }
   };
 
-  // Context value object
   const value = {
-    email, // Current user's email
-    token, // CSRF token for API requests
-    isAuthenticated: !!token, // Computed boolean for auth status
-    login, // Function to authenticate user
-    logout, // Function to clear authentication
+    email,
+    token,
+    isAuthenticated: !!token,
+    login,
+    logout,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
